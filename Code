@@ -1,1 +1,143 @@
-asdasd
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    setlocale(0, "RUS");
+    char Board[8][8];
+    for (int i = 0; i < 8; i++)
+        for (int j = 0; j < 8; j++)
+            Board[i][j] = '0';
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if ((i + j) % 2 == 0) Board[i][j] = '1';
+            if (Board[i][j] == '1' && (i >= 0 && i <= 2)) Board[i][j] = 'W';
+            if (Board[i][j] == '1' && (i >= 5 && i <= 7)) Board[i][j] = 'B';
+        }
+    }
+    cout << "    0 1 2 3 4 5 6 7\n\n";
+    for (int i = 0; i < 8; i++)
+        {
+            cout << i << "   ";
+            for (int j = 0; j < 8; j++)
+            {
+                cout << Board[i][j] << " ";
+            }
+            cout << endl;
+        }
+    int CountB = 12, CountW = 12, k = 0;
+    while (CountW != 0 || CountB != 0)
+    {
+        if (k == 0 || k % 2 == 0)
+        {
+            int IndeksI[12], IndeksJ[12], CountMove = 0, i_ = 0, j_ = 0, k_ = 0, Choice[2], Mas[4][2];
+            for (int i = 0; i < 12; i++)
+            {
+                IndeksI[i] = 999; IndeksJ[i] = 999;
+            }
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                {
+                    if (Board[i][j] == 'W')
+                    {
+                        if (Board[i + 1][j - 1] == '1') CountMove++;
+                        if (Board[i + 1][j + 1] == '1') CountMove++;
+                        if (Board[i + 2][j - 2] == '1' && Board[i + 1][j - 1] == 'B') CountMove++;
+                        if (Board[i + 2][j + 2] == '1' && Board[i + 1][j + 1] == 'B') CountMove++;
+                    }
+                    if (CountMove != 0)
+                    {
+                        IndeksI[i_] = i;
+                        IndeksJ[j_] = j;
+                        i_++; j_++; k_++;
+                        CountMove = 0;
+                    }
+                }
+                i_ = 0; j_ = 0; CountMove = 0;
+                cout << "\nВыберите шашку:\n";
+                for (int z = 0; z < k_; z++)
+                    cout << "Позиция №" << z + 1 << " - " << IndeksI[z] << "-" << IndeksJ[z] << "\n";
+                cout << "Вы выбираете позицию №"; cin >> Choice[0];
+                for (int z = 0; z < k_; z++)
+                {
+                    if (Choice[0] == z + 1)
+                    {
+                        cout << "\nШашка на позиции " << IndeksI[z] << "-" << IndeksJ[z] <<  " может сделать ход на:\n";
+                        if (Board[IndeksI[z] + 1][IndeksJ[z] - 1] == '1') { cout << CountMove + 1 << " - " << IndeksI[z] + 1 << "-" << IndeksJ[z] - 1 << "\n"; Mas[CountMove][0] = IndeksI[z] + 1; Mas[CountMove][1] = IndeksJ[z] - 1; CountMove++;}
+                        if (Board[IndeksI[z] + 1][IndeksJ[z] + 1] == '1') { cout << CountMove + 1 << " - " << IndeksI[z] + 1 << "-" << IndeksJ[z] + 1 << "\n"; Mas[CountMove][0] = IndeksI[z] + 1; Mas[CountMove][1] = IndeksJ[z] + 1; CountMove++;}
+                        if (Board[IndeksI[z] + 2][IndeksJ[z] - 2] == '1' && Board[IndeksI[z] + 1][IndeksJ[z] - 1] == 'B') { cout << CountMove + 1 << " - " << IndeksI[z] + 2 << "-" << IndeksJ[z] - 2 << "\n"; Mas[CountMove][0] = IndeksI[z] + 2; Mas[CountMove][1] = IndeksJ[z] - 2; CountMove++;}
+                        if (Board[IndeksI[z] + 2][IndeksJ[z] + 2] == '1' && Board[IndeksI[z] + 1][IndeksJ[z] + 1] == 'B') { cout << CountMove + 1 << " - " << IndeksI[z] + 2 << "-" << IndeksJ[z] + 2 << "\n"; Mas[CountMove][0] = IndeksI[z] + 2; Mas[CountMove][1] = IndeksJ[z] + 2; CountMove++;}
+                    }
+                }
+                cout << "\nВыберите № хода: "; cin >> Choice[1];
+                char Step;
+                Step = Board[IndeksI[Choice[0] - 1]][IndeksJ[Choice[0] - 1]];
+                Board[IndeksI[Choice[0] - 1]][IndeksJ[Choice[0] - 1]] = Board[Mas[Choice[1] - 1][0]][Mas[Choice[1] - 1][1]];
+                Board[Mas[Choice[1] - 1][0]][Mas[Choice[1] - 1][1]] = Step;
+                if (Mas[Choice[1] - 1][0] - IndeksI[Choice[0] - 1] == 2 && Mas[Choice[1] - 1][1] - IndeksJ[Choice[0] - 1] == -2) { Board[IndeksI[Choice[0] - 1] + 1][IndeksJ[Choice[0] - 1] - 1] = '1'; CountB--;}
+                if (Mas[Choice[1] - 1][0] - IndeksI[Choice[0] - 1] == 2 && Mas[Choice[1] - 1][1] - IndeksJ[Choice[0] - 1] == 2) { Board[IndeksI[Choice[0] - 1] + 1][IndeksJ[Choice[0] - 1] + 1] = '1'; CountB--;}
+        }
+        if (k % 2 != 0)
+        {
+            int IndeksI[12], IndeksJ[12], CountMove = 0, i_ = 0, j_ = 0, k_ = 0, Choice[2], Mas[4][2];
+            for (int i = 0; i < 12; i++)
+            {
+                IndeksI[i] = 999; IndeksJ[i] = 999;
+            }
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                {
+                    if (Board[i][j] == 'B')
+                    {
+                        if (Board[i - 1][j - 1] == '1') CountMove++;
+                        if (Board[i - 1][j + 1] == '1') CountMove++;
+                        if (Board[i - 2][j - 2] == '1' && Board[i - 1][j - 1] == 'W') CountMove++;
+                        if (Board[i - 2][j + 2] == '1' && Board[i - 1][j + 1] == 'W') CountMove++;
+                    }
+                    if (CountMove != 0)
+                    {
+                        IndeksI[i_] = i;
+                        IndeksJ[j_] = j;
+                        i_++; j_++; k_++;
+                        CountMove = 0;
+                    }
+                }
+                i_ = 0; j_ = 0; CountMove = 0;
+                cout << "\nВыберите шашку:\n";
+                for (int z = 0; z < k_; z++)
+                    cout << "Позиция №" << z + 1 << " - " << IndeksI[z] << "-" << IndeksJ[z] << "\n";
+                cout << "Вы выбираете позицию №"; cin >> Choice[0];
+                for (int z = 0; z < k_; z++)
+                {
+                    if (Choice[0] == z + 1)
+                    {
+                        cout << "\nШашка на позиции " << IndeksI[z] << "-" << IndeksJ[z] <<  " может сделать ход на:\n";
+                        if (Board[IndeksI[z] - 1][IndeksJ[z] - 1] == '1') { cout << CountMove + 1 << " - " << IndeksI[z] - 1 << "-" << IndeksJ[z] - 1 << "\n"; Mas[CountMove][0] = IndeksI[z] - 1; Mas[CountMove][1] = IndeksJ[z] - 1; CountMove++;}
+                        if (Board[IndeksI[z] - 1][IndeksJ[z] + 1] == '1') { cout << CountMove + 1 << " - " << IndeksI[z] - 1 << "-" << IndeksJ[z] + 1 << "\n"; Mas[CountMove][0] = IndeksI[z] - 1; Mas[CountMove][1] = IndeksJ[z] + 1; CountMove++;}
+                        if (Board[IndeksI[z] - 2][IndeksJ[z] - 2] == '1' && Board[IndeksI[z] - 1][IndeksJ[z] - 1] == 'B') { cout << CountMove + 1 << " - " << IndeksI[z] - 2 << "-" << IndeksJ[z] - 2 << "\n"; Mas[CountMove][0] = IndeksI[z] - 2; Mas[CountMove][1] = IndeksJ[z] - 2; CountMove++;}
+                        if (Board[IndeksI[z] - 2][IndeksJ[z] + 2] == '1' && Board[IndeksI[z] - 1][IndeksJ[z] + 1] == 'B') { cout << CountMove + 1 << " - " << IndeksI[z] - 2 << "-" << IndeksJ[z] + 2 << "\n"; Mas[CountMove][0] = IndeksI[z] - 2; Mas[CountMove][1] = IndeksJ[z] + 2; CountMove++;}
+                    }
+                }
+                cout << "\nВыберите № хода: "; cin >> Choice[1];
+                char Step;
+                Step = Board[IndeksI[Choice[0] - 1]][IndeksJ[Choice[0] - 1]];
+                Board[IndeksI[Choice[0] - 1]][IndeksJ[Choice[0] - 1]] = Board[Mas[Choice[1] - 1][0]][Mas[Choice[1] - 1][1]];
+                Board[Mas[Choice[1] - 1][0]][Mas[Choice[1] - 1][1]] = Step;
+                if (Mas[Choice[1] - 1][0] - IndeksI[Choice[0] - 1] == -2 && Mas[Choice[1] - 1][1] - IndeksJ[Choice[0] - 1] == -2) { Board[IndeksI[Choice[0] - 1] - 1][IndeksJ[Choice[0] - 1] - 1] = '1'; CountW--;}
+                if (Mas[Choice[1] - 1][0] - IndeksI[Choice[0] - 1] == -2 && Mas[Choice[1] - 1][1] - IndeksJ[Choice[0] - 1] == 2) { Board[IndeksI[Choice[0] - 1] - 1][IndeksJ[Choice[0] - 1] + 1] = '1'; CountW--;}
+        }
+        cout << "    0 1 2 3 4 5 6 7\n\n";
+    for (int i = 0; i < 8; i++)
+        {
+            cout << i << "   ";
+            for (int j = 0; j < 8; j++)
+            {
+                cout << Board[i][j] << " ";
+            }
+            cout << endl;
+        }
+        k++;
+    }
+}
